@@ -1,3 +1,4 @@
+import React, { Component } from 'react'
 import './App.css';
 import Navigation from './components/Navigation/Navigation';
 import Logo from './components/Logo/Logo';
@@ -10,7 +11,7 @@ const particlesParams = {
   className: 'particles',
   type: 'cobweb',
   bg: true,
-  num: 800,
+  num: 700,
   color: '#ffffff',
 }
 
