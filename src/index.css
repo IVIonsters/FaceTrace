@@ -5,3 +5,8 @@ body {
   font-family: 'Roboto', sans-serif;
   background: linear-gradient(90deg, #00ffb3, #00eeff);
 }
+
+/* adding cursor pointer to ALL BUTTONS */
+button {
+  cursor: pointer;
+}
