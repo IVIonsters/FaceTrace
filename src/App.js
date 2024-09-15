@@ -4,6 +4,7 @@ import Navigation from './components/Navigation/Navigation';
 import Logo from './components/Logo/Logo';
 import ImageForm from './components/ImageForm/ImageForm';
 import Rank from './components/Rank/Rank';
+import FaceRecognition from './components/FaceRecognition/Facerecognition.jsx'
 import 'tachyons';
 import ParticlesBg from 'particles-bg';
 
@@ -109,6 +110,7 @@ class App extends Component {
         <ImageForm 
           onInputChange={this.onInputChange} 
           onButtonSubmit={this.onButtonSubmit} />
+        <FaceRecognition />
       </div>
     );
   }
