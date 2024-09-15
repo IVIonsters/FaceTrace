@@ -61,8 +61,14 @@ class App extends Component {
     this.state = {
       input: '',
       imageUrl: '',
+      box: {},
     };
   }
+
+// Calculate the face location 
+calculateFacelocation = (data) => {
+
+}
 
 // Handles input on Image form - url
 onInputChange = (event) => {
@@ -93,6 +99,8 @@ onButtonSubmit = (event) => {
             const value = concept.value.toFixed(4);
 
             console.log(`${name}: ${value} BBox: ${topRow}, ${leftCol}, ${bottomRow}, ${rightCol}`);
+            // add the bounding box to the state
+            this.calculateFacelocation(result);
           });
         });
       } else {
