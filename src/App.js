@@ -61,6 +61,7 @@ class App extends Component {
     super();
     this.state = {
       input: '',
+      imageUrl: '',
     };
   }
 
@@ -72,6 +73,7 @@ class App extends Component {
 
   // handles the "detect" button on ImageForm
   onButtonSubmit = (event) => {
+    this.setState({imageUrl: this.state.input });
     fetch("https://api.clarifai.com/v2/models/" + MODEL_ID + "/versions/" + MODEL_VERSION_ID + "/outputs", requestOptions)
     .then(response => response.json())
     .then(result => {
@@ -110,7 +112,7 @@ class App extends Component {
         <ImageForm 
           onInputChange={this.onInputChange} 
           onButtonSubmit={this.onButtonSubmit} />
-        <FaceRecognition />
+        <FaceRecognition imageUrl={this.state.imageUrl} />
       </div>
     );
   }
