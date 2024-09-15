@@ -8,8 +8,7 @@ import FaceRecognition from './components/FaceRecognition/Facerecognition.jsx'
 import 'tachyons';
 import ParticlesBg from 'particles-bg';
 
-// Your PAT (Personal Access Token) can be found in the Account's Security section
-const PAT = 'f91116724bf84f14ac7e05de6b2af897';
+// Clarifai API request options
 // Specify the correct user_id/app_id pairings
 // Since you're making inferences outside your app's scope
 const USER_ID = 'clarifai';
@@ -17,7 +16,7 @@ const APP_ID = 'main';
 // Change these to whatever model and image URL you want to use
 const MODEL_ID = 'face-detection';
 const MODEL_VERSION_ID = '6dc7e46bc9124c5c8824be4822abe105';
-const IMAGE_URL = 'https://samples.clarifai.com/metro-north.jpg';
+let IMAGE_URL = 'https://samples.clarifai.com/metro-north.jpg';
 
 // Clarifai API request options
 const raw = JSON.stringify({
@@ -41,7 +40,7 @@ const requestOptions = {
   method: 'POST',
   headers: {
       'Accept': 'application/json',
-      'Authorization': 'Key ' + PAT
+      'Authorization': 'Key ' + process.env.REACT_APP_CLARIFAI_PAT
   },
   body: raw
 };
@@ -65,57 +64,58 @@ class App extends Component {
     };
   }
 
-  // Handles input on Image form - url
-  onInputChange = (event) => {
-    console.log(event.target.value);
-    this.setState({ input: event.target.value });
-  };
+// Handles input on Image form - url
+onInputChange = (event) => {
+  console.log(event.target.value);
+  this.setState({ input: event.target.value });
+};
 
-  // handles the "detect" button on ImageForm
-  onButtonSubmit = (event) => {
-    this.setState({imageUrl: this.state.input });
-    fetch("https://api.clarifai.com/v2/models/" + MODEL_ID + "/versions/" + MODEL_VERSION_ID + "/outputs", requestOptions)
+// handles the "detect" button on ImageForm
+onButtonSubmit = (event) => {
+  this.setState({ imageUrl: this.state.input });
+  fetch("https://api.clarifai.com/v2/models/" + MODEL_ID + "/versions/" + MODEL_VERSION_ID + "/outputs", requestOptions)
     .then(response => response.json())
     .then(result => {
+      const regions = result.outputs?.[0]?.data?.regions;
 
-        const regions = result.outputs[0].data.regions;
-
+      if (regions) {
         regions.forEach(region => {
-            // Accessing and rounding the bounding box values
-            const boundingBox = region.region_info.bounding_box;
-            const topRow = boundingBox.top_row.toFixed(3);
-            const leftCol = boundingBox.left_col.toFixed(3);
-            const bottomRow = boundingBox.bottom_row.toFixed(3);
-            const rightCol = boundingBox.right_col.toFixed(3);
+          // Accessing and rounding the bounding box values
+          const boundingBox = region.region_info.bounding_box;
+          const topRow = boundingBox.top_row.toFixed(3);
+          const leftCol = boundingBox.left_col.toFixed(3);
+          const bottomRow = boundingBox.bottom_row.toFixed(3);
+          const rightCol = boundingBox.right_col.toFixed(3);
 
-            region.data.concepts.forEach(concept => {
-                // Accessing and rounding the concept value
-                const name = concept.name;
-                const value = concept.value.toFixed(4);
+          region.data.concepts.forEach(concept => {
+            // Accessing and rounding the concept value
+            const name = concept.name;
+            const value = concept.value.toFixed(4);
 
-                console.log(`${name}: ${value} BBox: ${topRow}, ${leftCol}, ${bottomRow}, ${rightCol}`);
-                
-            });
+            console.log(`${name}: ${value} BBox: ${topRow}, ${leftCol}, ${bottomRow}, ${rightCol}`);
+          });
         });
-
+      } else {
+        console.log('No regions found in the response.');
+      }
     })
     .catch(error => console.log('error', error));
-  };
+};
 
-  render() {
-    return (
-      <div className="App">
-        <ParticlesBg {...particlesParams} />
-        <Navigation />
-        <Logo />
-        <Rank />
-        <ImageForm 
-          onInputChange={this.onInputChange} 
-          onButtonSubmit={this.onButtonSubmit} />
-        <FaceRecognition imageUrl={this.state.imageUrl} />
-      </div>
-    );
-  }
+render() {
+  return (
+    <div className="App">
+      <ParticlesBg {...particlesParams} />
+      <Navigation />
+      <Logo />
+      <Rank />
+      <ImageForm 
+        onInputChange={this.onInputChange} 
+        onButtonSubmit={this.onButtonSubmit} />
+      <FaceRecognition imageUrl={this.state.imageUrl} />
+    </div>
+  );
+}
 }
 
 export default App;
