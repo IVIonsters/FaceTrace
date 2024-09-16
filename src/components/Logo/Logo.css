@@ -1,3 +1,7 @@
 .Tilt {
   background: linear-gradient(90deg, #00ffb3, #00eeff);
 }
+
+.logo-container {
+  transform: translateX(5%);
+}
