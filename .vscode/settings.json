@@ -3,6 +3,7 @@
     "clarifai",
     "Facelocation",
     "Facerecognition",
-    "inputimage"
+    "inputimage",
+    "signin"
   ]
 }
