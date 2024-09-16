@@ -67,7 +67,11 @@ class App extends Component {
 
 // Calculate the face location 
 calculateFacelocation = (data) => {
-
+  const clarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box;
+  const image = document.getElementById('inputimage');
+  const width = Number(image.width);
+  const height = Number(image.height);
+  console.log(width, height);
 }
 
 // Handles input on Image form - url
