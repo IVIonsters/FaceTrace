@@ -4,10 +4,10 @@ const Rank = () => {
   return (
     <div>
       <div className='navy f3'>
-        {'IVIonsters, your current rank is...'}
+        {'Welcome, IVIonsters! Let\'s detect faces in your pictures!'}
       </div>
       <div className='navy f1'>
-        {'#3'}
+        {'Magic Brain!'}
       </div>
     </div>
   );
