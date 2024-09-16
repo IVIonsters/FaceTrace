@@ -5,8 +5,10 @@ import Logo from './components/Logo/Logo';
 import ImageForm from './components/ImageForm/ImageForm';
 import Rank from './components/Rank/Rank';
 import FaceRecognition from './components/FaceRecognition/Facerecognition.jsx';
+import SignIn from './components/SignIn/SignIn.jsx';
 import 'tachyons';
 import ParticlesBg from 'particles-bg';
+import Sign from './components/SignIn/SignIn.jsx';
 
 // Specify the correct user_id/app_id pairings
 const USER_ID = 'clarifai';
@@ -100,6 +102,7 @@ class App extends Component {
       <div className="App">
         <ParticlesBg {...particlesParams} />
         <Navigation />
+        <Sign />
         <Logo />
         <Rank />
         <ImageForm 
