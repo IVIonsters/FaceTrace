@@ -47,8 +47,8 @@ const particlesParams = {
   className: 'particles',
   type: 'cobweb',
   bg: true,
-  num: 700,
-  color: '#ffffff',
+  num: 500,
+  color: '#EDEDF4',
 };
 
 class App extends Component {
