@@ -1,6 +1,11 @@
-// setup express server
+// setup express server and body-parser
 const express = require('express');
+const bodyParser = require('body-parser');
+
 const app = express();
+
+// body-parser middleware
+app.use(bodyParser.json());
 
 // database variable users
 const database ={
@@ -31,7 +36,12 @@ app.get('/', (req, res) => {
 
 // Signin
 app.post('/signin', (req, res) => {
-    res.json('Ello Mate, Signin working! 👋');
+    if (req.body.email === database.users[0].email &&
+        req.body.password === database.users[0].password) {
+            res.json('Ello Mate, User Signed In! 👋');
+        } else {
+            res.status(400).json('Sad News Mate 😢, User not found!');
+        }
 })
 
 // Register
