@@ -94,7 +94,7 @@ app.listen(3000, () => {
     console.log('Server, Shes up and running on port 3000 mate! 🚀');
 })
 
-
+// plan for api
 /* 
 routes --> res = this is working
 signin --> POST = success/fail
