@@ -1,6 +1,7 @@
-// setup express server and body-parser
+// setup express server and body-parser / bcrypt-nodejs
 const express = require('express');
 const bodyParser = require('body-parser');
+const bcrypt = require('bcrypt-nodejs');
 
 const app = express();
 
@@ -88,6 +89,19 @@ app.put('/image', (req, res) => {
     res.status(400).json('Sorry Mate, No user found!');
   }
 });
+
+// // bcrypt-nodejs
+// bcrypt.hash("bacon", null, null, function(err, hash) {
+//   // Store hash in your password DB.
+// });
+
+// // Load hash from your password DB.
+// bcrypt.compare("bacon", hash, function(err, res) {
+//   // res == true
+// });
+// bcrypt.compare("veggies", hash, function(err, res) {
+//   // res = false
+// });
 
 // Port
 app.listen(3000, () => {
