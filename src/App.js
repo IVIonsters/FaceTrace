@@ -63,13 +63,6 @@ class App extends Component {
     };
   }
 
-  // connect to the server
-  componentDidMount() {
-    fetch('http://localhost:3001/')
-      .then(response => response.json())
-      .then(console.log);
-  }
-
   // Handles input on Image form - url
   onInputChange = (event) => {
     this.setState({ input: event.target.value });
