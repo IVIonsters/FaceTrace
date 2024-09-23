@@ -2,11 +2,13 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt-nodejs');
+const cors = require('cors');
 
 const app = express();
 
 // body-parser middleware
 app.use(bodyParser.json());
+app.use(cors());
 
 // database variable users
 const database ={
@@ -104,8 +106,8 @@ app.put('/image', (req, res) => {
 // });
 
 // Port
-app.listen(3000, () => {
-    console.log('Server, Shes up and running on port 3000 mate! 🚀');
+app.listen(3001, () => {
+    console.log('Server, Shes up and running on port 3001 mate! 🚀');
 })
 
 // plan for api
