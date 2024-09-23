@@ -31,7 +31,7 @@ const database ={
 
 // Routes
 app.get('/', (req, res) => {
-    res.send('Ello Mate, Shes working! 👋');
+    res.json(database.users);
 })
 
 // Signin
@@ -45,6 +45,18 @@ app.post('/signin', (req, res) => {
 })
 
 // Register
+app.post('/register', (req, res) => {
+  const { email, name, password } = req.body;
+    database.users.push({
+      id: '125',
+      name: name,
+      email: email,
+      password: password,
+      entries: 0,
+      joined: new Date()
+    })
+    res.json(database.users[database.users.length-1]);
+});
 
 // Profile
 
