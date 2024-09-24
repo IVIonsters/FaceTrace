@@ -16,19 +16,41 @@ class SignIn extends Component {
   onEmailChange(event) {
     this.setState({ signInEmail: event.target.value });
   }
+
   // Update the state with the value of the input field - password
   onPasswordChange(event) {
     this.setState({ signInPassword: event.target.value });
   }
+
   // Handles the submit button on the form
   onSubmitSignIn() {
     console.log(this.state);
     this.props.onRouteChange("home");
   }
+
   // Handles the route change for the Sign In page
   handleSubmit(event) {
     event.preventDefault();
-    this.onSubmitSignIn();
+    fetch("http://localhost:3001/signin", {
+      method: "post",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: this.state.signInEmail,
+        password: this.state.signInPassword,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data === 'Ello Mate, User Signed In! 👋') {
+          this.onSubmitSignIn();
+        } else {
+          // Handle sign-in failure (e.g., show an error message)
+          console.error("Sign-in failed");
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
   }
 
   render() {
