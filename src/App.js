@@ -108,14 +108,16 @@ class App extends Component {
   // handles the "detect" button on ImageForm
   onButtonSubmit = () => {
     this.setState({ imageUrl: this.state.input });
+    console.log('Image URL:', this.state.input);
     fetch("https://api.clarifai.com/v2/models/" + MODEL_ID + "/versions/" + MODEL_VERSION_ID + "/outputs", getRequestOptions(this.state.input))
       .then(response => response.json())
       .then(result => {
+        console.log('API Response:', result);
         if (result) {
           this.displayFaceBox(this.calculateFaceLocation(result));
         }
       })
-      .catch(error => console.log('error', error));
+      .catch(error => console.log('Error:', error));
   };
 
   // Handles the route change for the Sign In page
@@ -137,20 +139,23 @@ class App extends Component {
         <Navigation isSignedIn={isSignedIn} onRouteChange={this.onRouteChange} />
         {route === 'home'
           ? <div>
-              <Logo />
-              <Rank />
-              <ImageForm />
-              <FaceRecognition box={box} imageUrl={imageUrl} />
-            </div>
-          : (
-            route === 'signin'
-            ? <SignIn onRouteChange={this.onRouteChange} />
-            : <Register loadUser={this.loadUser} onRouteChange={this.onRouteChange} />
-          )
-        }
-      </div>
-    );
-  }
+          <Logo />
+          <Rank />
+          <ImageForm
+            onInputChange={this.onInputChange}
+            onButtonSubmit={this.onButtonSubmit}
+          />
+          <FaceRecognition box={box} imageUrl={imageUrl} />
+        </div>
+      : (
+        route === 'signin'
+        ? <SignIn onRouteChange={this.onRouteChange} />
+        : <Register onRouteChange={this.onRouteChange} />
+      )
+    }
+  </div>
+);
+}
 }
 
 export default App;
