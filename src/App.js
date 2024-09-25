@@ -70,6 +70,17 @@ class App extends Component {
     };
   }
 
+  // Handles the user profile
+  loadUser = (data) => {
+    this.setState({ user: {
+      id: data.id,
+      name: data.name,
+      email: data.email,
+      entries: data.entries,
+      joined: data.joined
+    }});
+  };
+
   // Handles input on Image form - url
   onInputChange = (event) => {
     this.setState({ input: event.target.value });

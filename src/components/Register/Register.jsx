@@ -42,8 +42,9 @@ class Register extends Component {
       }),
     })
       .then((response) => response.json())
-      .then((data) => {
-        if (data.id) {
+      .then((user) => {
+        if (user.id) {
+          this.props.loadUser(user);
           this.props.onRouteChange("home");
         } else {
           // Handle registration failure (e.g., show an error message)
