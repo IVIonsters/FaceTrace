@@ -5,6 +5,7 @@
     "Facelocation",
     "Facerecognition",
     "inputimage",
-    "signin"
+    "signin",
+    "signout"
   ]
 }
