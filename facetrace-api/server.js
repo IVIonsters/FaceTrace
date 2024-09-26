@@ -2,6 +2,32 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt-nodejs');
 const cors = require('cors');
+const dotenv = require('dotenv');
+const knex = require('knex');
+
+dotenv.config();
+
+// Initialize knex with PostgreSQL connection
+const db = knex({
+  client: 'pg',
+  connection: {
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+  },
+});
+
+// Test database connection by logging users
+db.select('*').from('users')
+  .then(data => {
+    console.log('Users:', data);
+  })
+  .catch(err => {
+    console.error('Error fetching users:', err);
+  });
+
 
 const app = express();
 
@@ -37,9 +63,6 @@ const APP_ID = 'main';
 const MODEL_ID = 'face-detection';
 const MODEL_VERSION_ID = '6dc7e46bc9124c5c8824be4822abe105';
 const CLARIFAI_API_KEY = process.env.REACT_APP_CLARIFAI_PAT; // Ensure this environment variable is set
-
-// Log the API key to ensure it's being set correctly (remove this in production)
-console.log('Clarifai API Key:', CLARIFAI_API_KEY);
 
 // Proxy endpoint for Clarifai API
 app.post('/clarifai', async (req, res) => {
@@ -110,14 +133,11 @@ app.post('/signin', (req, res) => {
 app.post('/register', (req, res) => {
   const { email, name, password } = req.body;
   const hash = bcrypt.hashSync(password);
-  database.users.push({
-    id: '125',
-    name: name,
+  db('users').insert({
     email: email,
-    password: hash,
-    entries: 0,
+    name: name,
     joined: new Date()
-  });
+  }).then(console.log);
   res.json(database.users[database.users.length - 1]);
 });
 
