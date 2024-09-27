@@ -111,23 +111,23 @@ class App extends Component {
         <Navigation isSignedIn={isSignedIn} onRouteChange={this.onRouteChange} />
         {route === 'home'
           ? <div>
-          <Logo />
-          <Rank />
-          <ImageForm
-            onInputChange={this.onInputChange}
-            onButtonSubmit={this.onButtonSubmit}
-          />
-          <FaceRecognition box={box} imageUrl={imageUrl} />
-        </div>
-      : (
-        route === 'signin'
-        ? <SignIn onRouteChange={this.onRouteChange} />
-        : <Register onRouteChange={this.onRouteChange} />
-      )
-    }
-  </div>
-);
-}
+              <Logo />
+              <Rank name={this.state.user.name} entries={this.state.user.entries} />
+              <ImageForm
+                onInputChange={this.onInputChange}
+                onButtonSubmit={this.onButtonSubmit}
+              />
+              <FaceRecognition box={box} imageUrl={imageUrl} />
+            </div>
+          : (
+            route === 'signin'
+            ? <SignIn loadUser={this.loadUser} onRouteChange={this.onRouteChange} />
+            : <Register loadUser={this.loadUser} onRouteChange={this.onRouteChange} />
+          )
+        }
+      </div>
+    );
+  }
 }
 
 export default App;

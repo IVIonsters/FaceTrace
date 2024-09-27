@@ -28,34 +28,11 @@ db.select('*').from('users')
     console.error('Error fetching users:', err);
   });
 
-
 const app = express();
 
 // body-parser middleware
 app.use(bodyParser.json());
 app.use(cors());
-
-// database variable users
-const database = {
-  users: [
-    {
-      id: '123',
-      name: 'IVIonsters',
-      email: 'IVIonsters@gmail.com',
-      password: bcrypt.hashSync('cookies'),
-      entries: 0,
-      joined: new Date()
-    },
-    {
-      id: '124',
-      name: 'Zachary',
-      email: 'Zachary@gmail.com',
-      password: bcrypt.hashSync('bananas'),
-      entries: 0,
-      joined: new Date()
-    }
-  ]
-};
 
 // Clarifai API details
 const USER_ID = 'clarifai';
@@ -105,62 +82,93 @@ app.post('/clarifai', async (req, res) => {
 
 // Routes
 app.get('/', (req, res) => {
-  res.json(database.users);
+  res.json('Server is running');
 });
 
 // Signin
 app.post('/signin', (req, res) => {
   const { email, password } = req.body;
-  let found = false;
-  database.users.forEach(user => {
-    if (user.email === email) {
-      found = true;
-      bcrypt.compare(password, user.password, (err, result) => {
-        if (result) {
-          res.json('Ello Mate, User Signed In! 👋');
-        } else {
-          res.status(400).json('Sad News Mate 😢, User not found!');
-        }
-      });
-    }
-  });
-  if (!found) {
-    res.status(400).json('Sad News Mate 😢, User not found!');
+  console.log('Signin request:', { email, password }); // Log request data
+  if (!email || !password) {
+    return res.status(400).json({ error: 'Incorrect form submission' });
   }
+  db.select('email', 'hash').from('login')
+    .where('email', '=', email)
+    .then(data => {
+      if (data.length) {
+        const isValid = bcrypt.compareSync(password, data[0].hash);
+        if (isValid) {
+          return db.select('*').from('users')
+            .where('email', '=', email)
+            .then(user => {
+              if (user.length) {
+                console.log('User found:', user[0]); // Log user data
+                res.json(user[0]);
+              } else {
+                res.status(400).json({ error: 'User not found' });
+              }
+            })
+            .catch(err => {
+              console.error('Unable to get user:', err); // Log error
+              res.status(400).json({ error: 'Unable to get user' });
+            });
+        } else {
+          res.status(400).json({ error: 'Wrong credentials' });
+        }
+      } else {
+        res.status(400).json({ error: 'Wrong credentials' });
+      }
+    })
+    .catch(err => {
+      console.error('Wrong credentials:', err); // Log error
+      res.status(400).json({ error: 'Wrong credentials' });
+    });
 });
 
 // Register
 app.post('/register', (req, res) => {
   const { email, name, password } = req.body;
+  if (!email || !name || !password) {
+    return res.status(400).json('Incorrect form submission');
+  }
   const hash = bcrypt.hashSync(password);
-  db('users')
-  .returning('*')
-  .insert({
-    email: email,
-    name: name,
-    joined: new Date()
+  db.transaction(trx => {
+    trx.insert({
+      hash: hash,
+      email: email
+    })
+    .into('login')
+    .returning('email')
+    .then(loginEmail => {
+      return trx('users')
+        .returning('*')
+        .insert({
+          email: loginEmail[0],
+          name: name,
+          joined: new Date()
+        })
+        .then(user => {
+          res.json(user[0]);
+        });
+    })
+    .then(trx.commit)
+    .catch(trx.rollback);
   })
-  .then(user => {
-    res.json(user[0]);
-  })
-  .catch(err => {
-    res.status(400).json('Sorry Mate, Unable to register!');
-  });
+  .catch(err => res.status(400).json('Unable to register'));
 });
 
 // Profile
 app.get('/profile/:id', (req, res) => {
   const { id } = req.params;
-  let found = false;
-  database.users.forEach(user => {
-    if (user.id === id) {
-      found = true;
-      return res.json(user);
-    }
-  });
-  if (!found) {
-    res.status(400).json('Sorry Mate, No user found!');
-  }
+  db.select('*').from('users').where({ id })
+    .then(user => {
+      if (user.length) {
+        res.json(user[0]);
+      } else {
+        res.status(400).json('Not found');
+      }
+    })
+    .catch(err => res.status(400).json('Error getting user'));
 });
 
 // Port

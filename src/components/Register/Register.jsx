@@ -30,7 +30,7 @@ class Register extends Component {
   }
 
   // Handles the submit button on the form
-  handleSubmit(event) {
+  handleSubmit = (event) => {
     event.preventDefault();
     fetch("http://localhost:3001/register", {
       method: "post",
@@ -54,7 +54,7 @@ class Register extends Component {
       .catch((error) => {
         console.error("Error:", error);
       });
-  }
+  };
 
   render() {
     return (

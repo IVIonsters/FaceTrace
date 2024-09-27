@@ -1,56 +1,49 @@
-import React, { Component } from "react";
+import React from 'react';
 
-class SignIn extends Component {
+class SignIn extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      signInEmail: "",
-      signInPassword: "",
+      signInEmail: '',
+      signInPassword: ''
     };
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.onEmailChange = this.onEmailChange.bind(this);
-    this.onPasswordChange = this.onPasswordChange.bind(this);
   }
 
-  // Update the state with the value of the input field - email
-  onEmailChange(event) {
+  onEmailChange = (event) => {
     this.setState({ signInEmail: event.target.value });
   }
 
-  // Update the state with the value of the input field - password
-  onPasswordChange(event) {
+  onPasswordChange = (event) => {
     this.setState({ signInPassword: event.target.value });
   }
 
-  // Handles the submit button on the form
-  onSubmitSignIn() {
-    console.log(this.state);
-    this.props.onRouteChange("home");
-  }
-
-  // Handles the route change for the Sign In page
-  handleSubmit(event) {
+  handleSubmit = (event) => {
     event.preventDefault();
-    fetch("http://localhost:3001/signin", {
-      method: "post",
-      headers: { "Content-Type": "application/json" },
+    fetch('http://localhost:3001/signin', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         email: this.state.signInEmail,
-        password: this.state.signInPassword,
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data === 'Ello Mate, User Signed In! 👋') {
-          this.onSubmitSignIn();
-        } else {
-          // Handle sign-in failure (e.g., show an error message)
-          console.error("Sign-in failed");
-        }
+        password: this.state.signInPassword
       })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+    })
+    .then(response => {
+      console.log('Response received:', response); // Log response
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json().catch(() => ({})); // Handle empty response
+    })
+    .then(user => {
+      console.log('User received:', user); // Log user data
+      if (user.id) {
+        this.props.loadUser(user);
+        this.props.onRouteChange('home');
+      } else {
+        console.log('Sign-in failed');
+      }
+    })
+    .catch(err => console.log('Sign-in failed', err));
   }
 
   render() {
@@ -61,9 +54,7 @@ class SignIn extends Component {
             <fieldset id="sign_up" className="ba b--transparent ph0 mh0">
               <legend className="f1 fw6 ph0 mh0">Sign In</legend>
               <div className="mt3">
-                <label className="db fw6 lh-copy f6" htmlFor="email-address">
-                  Email
-                </label>
+                <label className="db fw6 lh-copy f6" htmlFor="email-address">Email</label>
                 <input
                   className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
                   type="email"
@@ -73,9 +64,7 @@ class SignIn extends Component {
                 />
               </div>
               <div className="mv3">
-                <label className="db fw6 lh-copy f6" htmlFor="password">
-                  Password
-                </label>
+                <label className="db fw6 lh-copy f6" htmlFor="password">Password</label>
                 <input
                   className="b pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
                   type="password"
@@ -91,14 +80,6 @@ class SignIn extends Component {
                 type="submit"
                 value="Sign in"
               />
-            </div>
-            <div className="lh-copy mt3">
-              <p
-                onClick={() => this.props.onRouteChange("register")}
-                className="f6 link dim black db pointer"
-              >
-                Register
-              </p>
             </div>
           </form>
         </main>
